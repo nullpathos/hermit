@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<data>
+    <tab name="favorites" rank="0">
+	<launcher>/usr/share/applications/gnome-system-monitor.desktop</launcher>
+	<launcher>/usr/share/applications/gedit.desktop</launcher>
+	<launcher>/usr/share/applications/libreoffice-startcenter.desktop</launcher>
+	<launcher>/usr/share/applications/thunderbird.desktop</launcher>
+	<launcher>/usr/share/applications/firefox.desktop</launcher>
+    </tab>
+    <tab name="some things" rank="1">
+	<launcher>/usr/share/applications/eclipse.desktop</launcher>
+	<launcher>/usr/share/applications/glade.desktop</launcher>
+    </tab>
+</data>
