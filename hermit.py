@@ -1742,7 +1742,7 @@ class Hermit(object):
         about.set_version(version)
         about.set_copyright("")
         about.set_comments("It will start your programs")
-        about.set_website("http://127.0.0.1")
+        about.set_website("https://github.com/nullpathos/hermit")
         about.set_logo(self.hermit_icon_pixbuf)
         about.run()
         about.destroy()
