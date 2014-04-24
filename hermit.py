@@ -8,8 +8,7 @@ Application launcher for GNU/Linux.
 A simple tabbed window shows icons that will launch commands specified by .desktop files
 found in /usr/share/applications and user defined locations.
 
-License: You are free to do what you will with the hermit code but be aware that
-the imported libraries on which hermit depends each have their own licence.
+License: Public domain.
 
 Author: nullpathos, 2014
 '''
