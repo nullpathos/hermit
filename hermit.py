@@ -12,7 +12,7 @@ License: Public domain.
 
 Author: nullpathos, 2014
 '''
-version = "1.0"
+version = "1.1"
 
 import pygtk
 pygtk.require('2.0')
@@ -842,6 +842,31 @@ class Inline_assets(object):
       </packing>
     </child>
     <child>
+      <object class="GtkHBox" id="hbox_lasttab">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="returntotablabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Return to tab </property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="padding">5</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="padding">2</property>
+        <property name="position">6</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkHBox" id="hbox9">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -867,7 +892,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">6</property>
+        <property name="position">7</property>
       </packing>
     </child>
     <child>
@@ -883,6 +908,7 @@ class Inline_assets(object):
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="padding">5</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -942,7 +968,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">7</property>
+        <property name="position">8</property>
       </packing>
     </child>
     <child>
@@ -986,7 +1012,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">8</property>
+        <property name="position">9</property>
       </packing>
     </child>
     <child>
@@ -1030,7 +1056,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">9</property>
+        <property name="position">10</property>
       </packing>
     </child>
     <child>
@@ -1059,7 +1085,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">10</property>
+        <property name="position">11</property>
       </packing>
     </child>
     <child>
@@ -1104,7 +1130,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="padding">2</property>
-        <property name="position">11</property>
+        <property name="position">12</property>
       </packing>
     </child>
     <child>
@@ -1196,7 +1222,7 @@ class Inline_assets(object):
         <property name="expand">False</property>
         <property name="fill">False</property>
         <property name="pack_type">end</property>
-        <property name="position">12</property>
+        <property name="position">13</property>
       </packing>
     </child>
     <child>
@@ -1227,14 +1253,13 @@ class Config(object):
     """Access settings stored in an XML file"""
     config_file = os.path.join(os.environ['HOME'], '.config/hermit/config.xml')
     defaults = {'hotkey': 'Super_R',
-                'startup_tab': 0,
                 'icon_size': 56,
                 'icon_outline': True,
                 'button_border_width': 3,
                 'ignore_these_categories': '',
                 'only_these_categories': ['AudioVideo', 'Development', 'Graphics', 'Network', 'Office', 'Security', 'Settings', 'System', 'Utility'],
                 'columns': 9,
-                'height': 410,
+                'height': 440,
                 'fullscreen': False,
                 'placement': gtk.WIN_POS_CENTER,
                 'decoration': True,
@@ -1242,14 +1267,15 @@ class Config(object):
                 'all_workspaces': True,
                 'hide_after_selection': True,
                 'hide_after_focus_loss': True,
-                'show_system_apps': True
+                'show_system_apps': True,
+                'return_to_tab': 'previous tab'
                 }
 
     def __init__(self, config_file=None):
         if config_file is not None:
             self.config_file = config_file
         self.booleans = ['fullscreen', 'decoration', 'keep_above', 'all_workspaces', 'hide_after_selection', 'hide_after_focus_loss', 'show_system_apps', 'icon_outline']
-        self.numbers = ['startup_tab', 'icon_size', 'button_border_width', 'columns', 'height']
+        self.numbers = ['icon_size', 'button_border_width', 'columns', 'height']
         self.lists = ['ignore_these_categories', 'only_these_categories']
         self.auto_create_file(self.config_file)
         self.load_config()
@@ -1296,7 +1322,7 @@ class Config(object):
                 else:
                     self.config_dict[element.tag] = element.text
         
-        # change items from strings to appropriate types
+        # change items from strings to appropriate types (no need to convert strings)
         for item in self.config_dict.keys():
             if item in self.numbers:
                 self.config_dict[item] = int(self.config_dict[item])
@@ -1344,6 +1370,7 @@ class Config(object):
                 else:
                     leaf.text = 'none'
             else:
+                # it's a string already
                 leaf.text = self.config_dict[item]
         config_tree = etree.ElementTree(config_root)
         try:
@@ -1371,7 +1398,7 @@ class Hermit(object):
         self.config = Config(self.config_file)
         self.save_needed_flag = False
         self.restart_needed_flag = False
-        self.visible = False # maybe more reliable than window.get_visible()
+        self.visible = False  # maybe more reliable than window.get_visible()
         self.create_window()
         # setup keybinder
         keystr = self.config.config_dict['hotkey']
@@ -1394,6 +1421,10 @@ class Hermit(object):
         self.tab_container = self.ui.get_object("tab_container")
         self.tab_container.set_scrollable(True)
         self.tab_container.popup_enable()
+        
+        # create a tab:rank dict for returntotab combobox
+        self.tab_dict = {"previous tab":-1}
+        tab_number = 0
         
         # set up tabs from user's xml file
         try:
@@ -1418,6 +1449,9 @@ class Hermit(object):
                 scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
                 scrolledwindow.add_with_viewport(icon_grid_box)
                 self.tab_container.insert_page(scrolledwindow, tab_label, int(tab.attrib['rank']))
+                # add this tab to the tab dict
+                self.tab_dict[tab.attrib['name']] = int(tab.attrib['rank'])
+                tab_number = tab_number + 1
                 self.tab_container.set_tab_reorderable(scrolledwindow, True)
         
         # set up tabs from system locations, if needed
@@ -1434,9 +1468,12 @@ class Hermit(object):
                 scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
                 scrolledwindow.add_with_viewport(icon_grid_box)
                 self.tab_container.append_page(scrolledwindow, tab_label)
+                # add this tab to the tab dict
+                self.tab_dict[c] = tab_number
+                tab_number = tab_number + 1
                 self.tab_container.set_tab_reorderable(scrolledwindow, True)
-        
-        # setup configuration tab
+              
+        # setup Hermit configuration tab
         config_tab = gtk.Builder()
         config_tab.add_from_string(Inline_assets.config_ui)
         config_tab.connect_signals(self)
@@ -1444,6 +1481,21 @@ class Hermit(object):
         # remember previous save and restart flags
         save_needed = self.save_needed_flag
         restart_needed = self.restart_needed_flag
+        # set up return_to_tab combobox (special case, not in XML)
+        hbox_lasttab = config_tab.get_object("hbox_lasttab")
+        tabcombo = gtk.combo_box_new_text()
+        # set the tab names as combobox choices
+        for k in sorted(self.tab_dict.keys(), key=self.tab_dict.get):
+            tabcombo.append_text(k)
+        # get default from config and set as active text
+        if self.config.config_dict['return_to_tab'] in self.tab_dict.keys():
+            tabcombo.set_active(self.tab_dict[self.config.config_dict['return_to_tab']] + 1)
+        else:
+            tabcombo.set_active(0)
+        # set a call back handler for the combobox and add to the UI
+        tabcombo.connect("changed", self.on_returntotabcombo_changed)
+        hbox_lasttab.pack_start(tabcombo, expand=False, fill=False)
+        # set up the other config UI elements
         self.save_button = config_tab.get_object("savebutton")
         self.restart_button = config_tab.get_object("restartbutton")
         fullscreen_button = config_tab.get_object("fullscreenbutton")
@@ -1470,8 +1522,6 @@ class Hermit(object):
         scrolledwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         scrolledwindow.add_with_viewport(config_box)
         self.tab_container.append_page(scrolledwindow, config_lab)
-        self.tab_container.set_current_page(self.config.config_dict['startup_tab'])
-        self.current_tab = self.config.config_dict['startup_tab']
         self.window.set_keep_above(self.config.config_dict['keep_above'])
         keepabovebutton = config_tab.get_object("keepabovebutton")
         keepabovebutton.set_active(self.config.config_dict['keep_above'])
@@ -1489,6 +1539,7 @@ class Hermit(object):
         focushidebutton.set_active(self.config.config_dict['hide_after_focus_loss'])
         sysappsbutton = config_tab.get_object("sysappsbutton")
         sysappsbutton.set_active(self.config.config_dict['show_system_apps'])
+        self.current_tab = 0
         # restore the save and restart buttons to correct states
         self.save_needed(save_needed)
         self.restart_needed(restart_needed)
@@ -1642,7 +1693,7 @@ class Hermit(object):
             self.window.unstick()
         self.config.config_dict['all_workspaces'] = button.get_active()
         self.save_needed(True)
-        
+            
     def on_hideafterbutton_toggled(self, button):
         """UI callback"""
         self.config.config_dict['hide_after_selection'] = button.get_active()
@@ -1651,6 +1702,11 @@ class Hermit(object):
     def on_focushidebutton_toggled(self, button):
         """UI callback"""
         self.config.config_dict['hide_after_focus_loss'] = button.get_active()
+        self.save_needed(True)
+        
+    def on_returntotabcombo_changed(self, combobox):
+        """UI callback"""
+        self.config.config_dict['return_to_tab'] = combobox.get_active_text()
         self.save_needed(True)
             
     def on_placementradio1_pressed(self, button):
@@ -1708,11 +1764,12 @@ class Hermit(object):
            
     def on_restartbutton_pressed(self, button):
         """UI callback, destroys the UI elements and recreates them"""
+        self.hide_hermit()
         self.window.disconnect(self.win_destroy_sig)
         self.window.destroy()
         self.create_window()
         self.restart_needed(False)
-        self.window.show_all()
+        self.show_hermit()
         
     def save_needed(self, flag=True):
         """Enables the save button if settings have been changed"""
@@ -1803,7 +1860,10 @@ class Hermit(object):
         self.window.show_all()
         self.window.grab_focus()
         self.window.present()
-        self.tab_container.set_current_page(self.current_tab)
+        if (self.config.config_dict['return_to_tab'] in self.tab_dict.keys()) and (self.tab_dict[self.config.config_dict['return_to_tab']] != -1):
+            self.tab_container.set_current_page(self.tab_dict[self.config.config_dict['return_to_tab']]) 
+        else:
+            self.tab_container.set_current_page(self.current_tab)
         self.visible = True
                   
 if __name__ == "__main__":
