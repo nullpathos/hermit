@@ -21,8 +21,13 @@ import os
 import glib
 import shlex
 from lxml import etree
-import keybinder
 import syslog
+import signal
+try:
+    import keybinder
+    keybinder_imported = True
+except ImportError:
+    keybinder_imported = False
 
 def show_error(errortext):
     '''Log errortext to Linux system log'''
@@ -1377,7 +1382,8 @@ class Config(object):
             config_tree.write(self.config_file, pretty_print=True)
         except IOError:
             show_error("could not write to %s" % self.config_file)
-                 
+
+                   
 class Hermit(object):
     """Application launcher"""
     tab_file = os.path.join(os.environ['HOME'], '.config/hermit/tabs.xml')
@@ -1394,15 +1400,24 @@ class Hermit(object):
             self.user_launcher_dir = user_launcher_dir
         if config_file is not None:
             self.config_file = config_file
+        # ignore USR1 signal until the window is created
+        signal.signal(signal.SIGUSR1, signal.SIG_IGN)
         self.hermit_icon_pixbuf = gtk.gdk.pixbuf_new_from_inline(len(Inline_assets.hermit_icon_inline[0]), Inline_assets.hermit_icon_inline[0], copy_pixels=False)
         self.config = Config(self.config_file)
         self.save_needed_flag = False
         self.restart_needed_flag = False
         self.visible = False  # maybe more reliable than window.get_visible()
         self.create_window()
+        # handle USR1 signal if received
+        signal.signal(signal.SIGUSR1, self.handle_sig)
         # setup keybinder
         keystr = self.config.config_dict['hotkey']
-        keybinder.bind(keystr, self.toggle_show, keystr)  # sending keystr as user data although not used in toggle_show
+        if keybinder_imported:
+            keybinder.bind(keystr, self.toggle_show, keystr) # sending keystr as user data although not used in toggle_show
+        
+    def handle_sig(self, signum, frame):
+        """handles USR1 signal to show/hide hermit"""
+        self.toggle_show()
         
     def create_window(self):
         """Creates GTK user interface elements"""

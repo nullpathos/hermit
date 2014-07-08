@@ -16,13 +16,17 @@ Requirements / dependencies
 ---------------------------
 python 2.7
 python-gtk2
-python-keybinder, use your distribution repositories or https://github.com/engla/keybinder
-other python libraries: os, glib, shlex, lxml, syslog
+(optional) python-keybinder, use your distribution repositories or https://github.com/engla/keybinder
+other python libraries: os, glib, shlex, lxml, syslog, signal
 
 Usage
 -----
 It's just one python script, download it, run it (use python or change permissions and execute).
-By default, hermit will appear after pressing Super_R (right Meta key).
+
+By default, hermit will appear after pressing Super_R (right Meta key) if python-keybinder is installed.
+Alternatively, send hermit a USR1 signal:
+pkill -USR1 -x hermit.py  (this should work if hermit was executed directly)
+Use your desktop environment to map a global hotkey or some other action to this command.
 
 It will create an XML file of settings in ~/.config/hermit/
 
