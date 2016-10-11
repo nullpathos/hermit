@@ -25,8 +25,9 @@ nullpathos
 It's just one python script, download it, run it (use python or change permissions and execute).
 
 By default, hermit will appear after pressing Super_R (right Meta key) if python-keybinder is installed.
+
 Alternatively, send hermit a USR1 signal:
-`pkill -USR1 -x hermit.py`  (this should work if hermit was executed directly)
+`pkill -USR1 -x hermit.py`  (this should work if hermit was executed directly).
 Use your desktop environment to map a global hotkey or some other action to this command.
 
 Hermit will create an XML file of settings in ~/.config/hermit/
@@ -40,15 +41,16 @@ Change settings directly in the XML file (needs restart) or using the last tab.
 
 Add to the end of ~/.config/openbox/autostart :
 
-python /wherever_you_saved_it/hermit.py &
-xdotool behave_screen_edge --delay 0 --quiesce 500 left exec --sync xte "key Super_R" &
+`python /wherever_you_saved_it/hermit.py &
+xdotool behave_screen_edge --delay 0 --quiesce 500 left exec --sync xte "key Super_R" &`
 
 This will show hermit when your mouse pointer touches the left screen edge by simulating a press
 of the hotkey, in this case Super_R. You'll have to install xdotool and xautomation (which
 contains the xte command).
 
 Alternatively, have hermit appear when right-clicking on the desktop background:
-Edit ~/.config/openbox/rc.xml to change the selection within the "Root" context:
+ Edit ~/.config/openbox/rc.xml to change the selection within the "Root" context:
+
 >      <mousebind button="Right" action="Press">
 >        <action name="Execute">
 >          <command>xte "key Super_R"</command>
@@ -59,6 +61,7 @@ Edit ~/.config/openbox/rc.xml to change the selection within the "Root" context:
 >          <menu>root-menu</menu>
 >        </action>
 >      </mousebind>
+
 The normal openbox menu will still be available using control-rightclick.
 
 ## Future stuff
