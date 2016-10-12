@@ -41,8 +41,8 @@ Change settings directly in the XML file (needs restart) or using the last tab.
 
 Add to the end of ~/.config/openbox/autostart :
 
-`python /wherever_you_saved_it/hermit.py &`
-`xdotool behave_screen_edge --delay 0 --quiesce 500 left exec --sync xte "key Super_R" &`
+>python /wherever_you_saved_it/hermit.py &
+>xdotool behave_screen_edge --delay 0 --quiesce 500 left exec --sync xte "key Super_R" &
 
 This will show hermit when your mouse pointer touches the left screen edge by simulating a press
 of the hotkey, in this case Super_R. You'll have to install xdotool and xautomation (which
